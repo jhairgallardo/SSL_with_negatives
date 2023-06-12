@@ -47,7 +47,7 @@ parser.add_argument('--alpha', type=float, default=0.5)
 parser.add_argument('--seed', type=int, default=0)
 # GPU
 parser.add_argument('--gpu', type=int, default=0)
-parser.add_argument('--track_wandb', action='store_true', default=True)
+parser.add_argument('--track_wandb', action='store_true')
 parser.add_argument('--num_classes', type=int, default=10)
 
 
@@ -119,7 +119,7 @@ def main_worker(args):
                                                pin_memory=True)
     
     # Create data loaders for KNN evaluation
-    # args.knn_train_loader, args.knn_val_loader = get_knn_dataloaders(args, Transform)
+    args.knn_train_loader, args.knn_val_loader = get_knn_dataloaders(args, Transform)
 
     print('\nLoading model, optimizer')
     model = SSL_model(args)
@@ -275,7 +275,7 @@ class SSL_model(nn.Module):
             kernel_visualization = torchvision.utils.make_grid(kernels, nrow=16, pad_value=1)
 
             # Get KNN performance on subset of training
-            # knn_acc = knn_validate(self.encoder, self.args)
+            knn_acc = knn_validate(self.encoder, self.args)
 
             # wandb track
             wandb.log({
@@ -286,7 +286,7 @@ class SSL_model(nn.Module):
                 'conv1': wandb.Image(kernel_visualization),
                 "steps": step,
                 "lr": lr,
-                # "knn_acc": knn_acc,
+                "knn_acc": knn_acc,
                 })
             
             plt.close(fig_S)

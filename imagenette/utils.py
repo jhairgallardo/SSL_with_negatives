@@ -40,10 +40,10 @@ def get_knn_dataloaders(args, Transform):
     aux_dataset = datasets.ImageFolder(os.path.join(args.data,'train'), Transform(mode='noaug'))
     train_indices = np.arange(0, len(aux_dataset))
     train_targets = np.array(aux_dataset.targets)
-    aux_train_idxs, knn_train_idxs, aux_train_targets,_ = train_test_split(train_indices,train_targets, test_size=0.1, random_state=args.seed, stratify=train_targets)
-    _, knn_val_idxs = train_test_split(aux_train_idxs, test_size=0.012, random_state=args.seed, stratify=aux_train_targets)
-    knn_traindataset = torch.utils.data.Subset(aux_dataset, knn_train_idxs)
-    knn_valdataset = torch.utils.data.Subset(aux_dataset, knn_val_idxs)
+    aux_train_idxs, knn_train_idxs, aux_train_targets,_ = train_test_split(train_indices,train_targets, test_size=0.05, random_state=args.seed, stratify=train_targets)
+    _, knn_val_idxs = train_test_split(aux_train_idxs, test_size=0.006, random_state=args.seed, stratify=aux_train_targets)
+    knn_traindataset = torch.utils.data.Subset(aux_dataset, knn_train_idxs) # 50 samples per class
+    knn_valdataset = torch.utils.data.Subset(aux_dataset, knn_val_idxs) # 5 samples per class
     knn_train_loader = torch.utils.data.DataLoader(knn_traindataset,batch_size=64,shuffle=False,num_workers=2, pin_memory=False)
     knn_val_loader = torch.utils.data.DataLoader(knn_valdataset,batch_size=64,shuffle=False,num_workers=2, pin_memory=False)
     del aux_dataset, knn_traindataset, knn_valdataset
