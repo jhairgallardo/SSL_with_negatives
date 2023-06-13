@@ -231,8 +231,9 @@ class SSL_model(nn.Module):
 
         # loss using both S and M
         alpha = self.args.alpha
+        k = x.shape[0]
         combinedMS = alpha*M + (1-alpha)*(S+1)**2
-        loss = (1/x.shape[0])*torch.sum(off_diagonal(combinedMS))
+        loss = (1/(k**2 - k))*torch.sum(off_diagonal(combinedMS))
 
         self.S = S
 
